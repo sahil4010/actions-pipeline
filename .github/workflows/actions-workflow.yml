@@ -9,8 +9,17 @@ jobs:
 
         -   name: install requirements.txt
             run: pip install -r requirements.txt
-
-        -   name: run code
-            run: python app.py
+        
+        -   name: Run pytest
+            uses: pavelzw/pytest-action@v2
+            with:
+              verbose: true
+              emoji: true
+              job-summary: true
+              custom-arguments: '-q'
+              click-to-expand: true
+              report-title: 'Test Report'
+        # -   name: run code
+        #     run: python app.py
             
             
