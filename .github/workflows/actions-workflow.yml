@@ -1,0 +1,16 @@
+name: first-workflow
+on: [push, workflow_dispatch]
+jobs:
+    first-job:
+        runs-on: ubuntu-latest
+        steps:
+        -   name: get code
+            uses: actions/checkout@v4
+
+        -   name: install requirements.txt
+            run: pip install requirements.txt
+
+        -   name: run code
+            run: python app.py
+            
+            
