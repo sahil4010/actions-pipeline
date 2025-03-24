@@ -7,19 +7,8 @@ jobs:
         -   name: get code
             uses: actions/checkout@v4
 
-        -   name: install requirements.txt
-            run: pip install -r requirements.txt
-        
-        -   name: Run pytest
-            uses: pavelzw/pytest-action@v2
-            with:
-              verbose: true
-              emoji: true
-              job-summary: true
-              custom-arguments: '-q'
-              click-to-expand: true
-              report-title: 'Test Report'
-        # -   name: run code
-        #     run: python app.py
-            
-            
+        -   name: dockerize
+            run: |
+                docker run -d --name mysql -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=devops -e MYSQL_USER=admin -e MYSQL_PASSWORD=admin  -p 3306:3306   mysql:5.7
+                docker build -t actions-pipeline .
+                docker run actions-pipeline
