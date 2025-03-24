@@ -42,4 +42,4 @@ jobs:
                     -e MYSQL_PASSWORD=admin \
                     -e MYSQL_DB=mydb \
                     -p 5000:5000 \
-                    actions-pipeline:$IMAGE_TAG
+                    actions-pipeline
