@@ -21,6 +21,7 @@ jobs:
 
         -   name: dockerize
             run: |
+                IMAGE_TAG="${GITHUB_SHA}"
                 docker network create -d bridge two-tier
 
 
