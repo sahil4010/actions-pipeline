@@ -9,7 +9,7 @@ jobs:
 
         -   name: dockerize
             run: |
-                docker create network two-tier
+                docker network create -d bridge two-tier
                 docker build -t actions-pipeline .
 
                 docker run -d \
