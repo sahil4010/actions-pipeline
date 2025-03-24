@@ -15,7 +15,7 @@ jobs:
             
         -   name: build and tag image
             run: |
-                Ddocker build -t actions-pipeline
+                docker build -t actions-pipeline
 
         -   name: dockerize
             run: |
