@@ -2,7 +2,7 @@ name: second-workflow
 on: push
 jobs:
     job1:
-      uses: ./github/workflows/actions-workflow.yml@test
+      uses: .github/workflows/actions-workflow.yml@test
     
     job2:
         runs-on: ubuntu-latest
