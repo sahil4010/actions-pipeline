@@ -1,11 +1,15 @@
 name: first-workflow
 on: workflow_call
 jobs:
-    first-job:
+    job1:
+        uses: sahil4010/actions-pipeline/.github/workflows/reusable.yml@test
+
+    job2:
         runs-on: ubuntu-latest
+        needs: job1
         steps:
-        -   name: get code
-            uses: actions/checkout@v4
+        # -   name: get code
+        #     uses: actions/checkout@v4
 
         -   name: dockerize
             run: |

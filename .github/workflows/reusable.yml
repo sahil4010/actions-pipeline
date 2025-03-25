@@ -1,0 +1,25 @@
+name: reuseable code
+on: 
+    workflow_call:
+        inputs:
+            version:
+                required: true
+                type: string
+
+jobs:
+    code-check:
+        runs-on: ubuntu-latest
+        steps:
+        -   name: get code
+            uses: actions/checkout@v4
+            
+        -   name: get version
+            uses: actions/setup-python@v5
+            with:
+                python-version: ${{ inputs.version }} 
+
+        -   name: requirements
+            run:  |
+                pip install requirements.txt
+        
+
