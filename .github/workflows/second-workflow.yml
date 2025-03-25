@@ -3,6 +3,8 @@ on: push
 jobs:
     using_actions-workflow:
       uses: sahil4010/actions-pipeline/.github/workflows/reusable.yml@test
+      with:
+        version: 3.12
     
     verify_multiple_call:
         runs-on: ubuntu-latest
