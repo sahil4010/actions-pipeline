@@ -4,7 +4,7 @@ jobs:
     job1:
         uses: sahil4010/actions-pipeline/.github/workflows/reusable.yml@test
         with:
-            version: python3 version.py
+            version: 3.12
 
     job2:
         runs-on: ubuntu-latest
