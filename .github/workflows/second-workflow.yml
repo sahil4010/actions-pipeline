@@ -1,5 +1,5 @@
 name: second-workflow
-on: push
+on: workflow_dispatch
 jobs:
     using_actions-workflow:
       uses: sahil4010/actions-pipeline/.github/workflows/reusable.yml@test

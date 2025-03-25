@@ -1,5 +1,5 @@
 name: first-workflow
-on: workflow_call
+on: push
 jobs:
     using_reusable:
         uses: sahil4010/actions-pipeline/.github/workflows/reusable.yml@test
@@ -36,3 +36,14 @@ jobs:
                     -e MYSQL_DB=mydb \
                     -p 5000:5000 \
                     actions-pipeline:latest
+
+        -   name: create pods
+            run: |
+                cd k8s
+                kubectl apply -n assignment -f mysql-deployment.yml
+                kubectl apply -n assignment -f mysql-configmap.yml
+                kubectl apply -n assignment -f mysql-secrets.yml
+                kubectl apply -n assignment -f mysql-svc.yml   
+                kubectl apply -n assignment -f two-tier-app-deployment.yml
+                kubectl apply -n assignment -f two-tier-app-svc.yml                
+                kubectl get all -n assignment
