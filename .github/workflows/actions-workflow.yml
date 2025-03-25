@@ -14,38 +14,56 @@ jobs:
         -   name: get code
             uses: actions/checkout@v4
 
-        -   name: dockerize
+        -   name: Login to Docker Hub
+            uses: docker/login-action@v3
+            with:
+              username: ${{ secrets.docker_username }}
+              password: ${{ secrets.docker_password }}
+        
+        -   name: check docker login
+            run: docker info
+        
+        -   name: build and tag image
             run: |
-                docker network create -d bridge two-tier
-                docker build -t actions-pipeline .
-
-                docker run -d \
-                    --name mysql \
-                    -v mysql-data:/var/lib/mysql \
-                    --network=two-tier \
-                    -e MYSQL_DATABASE=mydb \
-                    -e MYSQL_ROOT_PASSWORD=admin \
-                    -p 3306:3306 \
-                    mysql:5.7
-
-                docker run -d \
-                    --name flaskapp \
-                    --network=two-tier \
-                    -e MYSQL_HOST=mysql \
-                    -e MYSQL_USER=root \
-                    -e MYSQL_PASSWORD=admin \
-                    -e MYSQL_DB=mydb \
-                    -p 5000:5000 \
-                    actions-pipeline:latest
-
-        -   name: create pods
+                IMAGE_TAG="${GITHUB_SHA}"
+                IMAGE="${{ secrets.DOCKER_USERNAME }}/actions-pipeline:$IMAGE_TAG"
+                docker build -t $IMAGE .
+        
+        -   name: push docker image
             run: |
+                IMAGE_TAG="${GITHUB_SHA}"
+                IMAGE="${{ secrets.DOCKER_USERNAME }}/actions-pipeline:$IMAGE_TAG"
+                docker push $IMAGE
+
+        -   name: changing k8 manifests sql
+            run:  |
                 cd k8s
-                kubectl creante ns assignment
-                kubectl apply -n assignment -f mysql-deployment.yml
-                kubectl apply -n assignment -f mysql-configmap.yml
-                kubectl apply -n assignment -f mysql-secrets.yml
-                kubectl apply -n assignment -f mysql-svc.yml   
-                kubectl apply -n assignment -f two-tier-app-deployment.yml
-                kubectl apply -n assignment -f two-tier-app-svc.yml                
+                kubectl get ns assignment || echo "not found" > checkns.txt
+                if grep -q "not found" checkns.txt; then
+                    kubectl create ns assignment
+                    kubectl apply -n assignment -f mysql-deployment.yml
+                    kubectl apply -n assignment -f mysql-configmap.yml
+                    kubectl apply -n assignment -f mysql-secrets.yml
+                    kubectl apply -n assignment -f mysql-svc.yml               
+                else
+                    kubectl apply -n assignment -f mysql-deployment.yml
+                    kubectl apply -n assignment -f mysql-configmap.yml
+                    kubectl apply -n assignment -f mysql-secrets.yml
+                    kubectl apply -n assignment -f mysql-svc.yml
+                fi                
+             
+                        
+        -   name: changing k8 manifests app
+            run: |
+                cd k8s 
+                IMAGE_TAG="${GITHUB_SHA}"
+
+                kubectl get deployment two-tier-app --namespace assignment || echo "not found" > result.txt  
+                if grep -q "not found" result.txt; then
+                    kubectl apply -f two-tier-app-deployment.yml -n assignment
+                else              
+                    kubectl -n assignment set image deployment/two-tier-app two-tier-app=${{ secrets.DOCKER_USERNAME }}/actions-pipeline:$IMAGE_TAG 
+                fi 
+
+                kubectl apply -f two-tier-app-svc.yml -n assignment
                 kubectl get all -n assignment
