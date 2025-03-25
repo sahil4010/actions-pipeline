@@ -40,6 +40,7 @@ jobs:
         -   name: create pods
             run: |
                 cd k8s
+                kubectl creante ns assignment
                 kubectl apply -n assignment -f mysql-deployment.yml
                 kubectl apply -n assignment -f mysql-configmap.yml
                 kubectl apply -n assignment -f mysql-secrets.yml
