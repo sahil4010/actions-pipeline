@@ -1,4 +1,5 @@
-name: first-workflow
+name: first-workflow # main workflow
+
 on: push
 jobs:
     using_reusable:
