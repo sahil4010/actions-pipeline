@@ -1,12 +1,12 @@
 name: second-workflow
 on: push
 jobs:
-    job1:
+    using_actions-workflow:
       uses: sahil4010/actions-pipeline/.github/workflows/actions-workflow.yml@test
     
-    job2:
+    verify_multiple_call:
         runs-on: ubuntu-latest
-        needs: job1
+        needs: using_actions-workflow
         steps:
         -   name: check
             run: echo "hello"

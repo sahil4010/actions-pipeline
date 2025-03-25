@@ -1,14 +1,14 @@
 name: first-workflow
 on: workflow_call
 jobs:
-    job1:
+    using_reusable:
         uses: sahil4010/actions-pipeline/.github/workflows/reusable.yml@test
         with:
             version: 3.12
 
     job2:
         runs-on: ubuntu-latest
-        needs: job1
+        needs: using_reusable
         steps:
         -   name: get code
             uses: actions/checkout@v4
