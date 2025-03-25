@@ -5,21 +5,50 @@ on:
             version:
                 required: true
                 type: string
+                default: "3.12"
 
 jobs:
     code-check:
         runs-on: ubuntu-latest
         steps:
-        -   name: get code
-            uses: actions/checkout@v4
+            - name: Checkout Code
+              uses: actions/checkout@v4
+      
+            - name: Set up Python
+              uses: actions/setup-python@v4
+              with:
+                python-version: ${{ inputs.version }}
+      
+            - name: Create Virtual Environment
+              run: |
+                rm -rf venv  # Remove any existing venv
+                python -m venv venv
+                source venv/bin/activate
+                python -m ensurepip --default-pip
+                pip install --upgrade pip setuptools wheel
+      
+            - name: Install Dependencies & Linters
+              run: |
+                source venv/bin/activate
+                pip install -r requirements.txt
+                pip install flake8 black isort pytest
+      
+            - name: Run Linting (Flake8)
+              run: |
+                source venv/bin/activate
+                flake8 . --exclude=venv,migrations,__pycache__ --count --select=E9,F63,F7,F82 --show-source --statistics
             
-        -   name: get version
-            uses: actions/setup-python@v5
-            with:
-                python-version: ${{ inputs.version }} 
-
-        # -   name: requirements
-        #     run:  |
-        #         pip install requirements.txt
+            - name: Run Code Formatting (Black & isort)
+              run: |
+                source venv/bin/activate
+                black . --exclude "venv|migrations|__pycache__"
+                isort . --skip venv --skip migrations
+      
+      
+            - name: Run Tests
+              run: |
+                source venv/bin/activate
+                pytest
+                
         
 

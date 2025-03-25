@@ -2,7 +2,7 @@ name: second-workflow
 on: push
 jobs:
     using_actions-workflow:
-      uses: sahil4010/actions-pipeline/.github/workflows/actions-workflow.yml@test
+      uses: sahil4010/actions-pipeline/.github/workflows/reusable.yml@test
     
     verify_multiple_call:
         runs-on: ubuntu-latest

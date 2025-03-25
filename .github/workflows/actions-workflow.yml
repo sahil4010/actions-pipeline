@@ -7,7 +7,7 @@ jobs:
             version: 3.12
 
     job2:
-        runs-on: ubuntu-latest
+        runs-on: self-hosted
         needs: using_reusable
         steps:
         -   name: get code
