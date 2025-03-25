@@ -18,8 +18,8 @@ jobs:
             with:
                 python-version: ${{ inputs.version }} 
 
-        -   name: requirements
-            run:  |
-                pip install requirements.txt
+        # -   name: requirements
+        #     run:  |
+        #         pip install requirements.txt
         
 
